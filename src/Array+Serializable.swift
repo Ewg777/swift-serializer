@@ -21,12 +21,12 @@ extension Array where Element: Serializable {
     
     :returns: The array as JSON, wrapped in NSData.
     */
-    public func toJson(prettyPrinted: Bool = false) -> NSData? {
+    public func toJson(_ prettyPrinted: Bool = false) -> Data? {
         let subArray = self.toNSDictionaryArray()
         
-        if NSJSONSerialization.isValidJSONObject(subArray) {
+        if JSONSerialization.isValidJSONObject(subArray) {
             do {
-                let json = try NSJSONSerialization.dataWithJSONObject(subArray, options: (prettyPrinted ? .PrettyPrinted: NSJSONWritingOptions()))
+                let json = try JSONSerialization.data(withJSONObject: subArray, options: (prettyPrinted ? .prettyPrinted: JSONSerialization.WritingOptions()))
                 return json
             } catch let error as NSError {
                 print("ERROR: Unable to serialize json, error: \(error)")
@@ -41,9 +41,9 @@ extension Array where Element: Serializable {
     
     :returns: The array as a JSON string.
     */
-    public func toJsonString(prettyPrinted: Bool = false) -> String? {
+    public func toJsonString(_ prettyPrinted: Bool = false) -> String? {
         if let jsonData = toJson(prettyPrinted) {
-            return NSString(data: jsonData, encoding: NSUTF8StringEncoding) as String?
+            return NSString(data: jsonData, encoding: String.Encoding.utf8.rawValue) as String?
         }
         
         return nil
